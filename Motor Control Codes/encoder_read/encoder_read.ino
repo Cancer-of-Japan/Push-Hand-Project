@@ -20,39 +20,50 @@ void setup() {
   aLastState = digitalRead(outputA);
 }
 
+void rotR() {
+  
+  int state;
+  bool check = false;
+  for(int i = 0; i < 21; i++){
+    check = false;
+    while(check == false){
+      if(digitalRead(outputA) == HIGH){
+        state = 1;
+      }else{
+        state = 0;
+      }
+      
+      //Serial.println("Called !!!");
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
+      analogWrite(enB, 255);
+      //delay(1);
+
+      if(digitalRead(outputA) != state){
+        check = true;
+        Serial.println("Clicked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        digitalWrite(in3, LOW);
+        digitalWrite(in4, LOW);
+      }else{
+        check = false;
+      }
+      
+    }
+  }
+}
+
 void loop() {
   int i, aCnt=0, bCnt=0;
-
-  for(i=0; i< 50; i++){
-      aState = digitalRead(outputA);
-      bState = digitalRead(outputB);// Reads the "current" state of the outputA
-      //Serial.print("OutputA: ");
-      aCnt = aCnt + aState;
-      bCnt = bCnt + bState;
-      //Serial.println(aState);
-      //Serial.print("OutputB: ");
-      //Serial.println(bState);
-  }
-  /*
-  // If the previous and the current state of the outputA are different, that means a Pulse has occured
-  if (aState != aLastState) {
-    // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-    if (digitalRead(outputB) != aState) {
-      counter ++;
-    } else {
-      counter --;
-    }
-    Serial.print("Position: ");
-    Serial.println(counter);
-  }
-  */
-  if(aCnt > bCnt){
+  int cur_cnt = counter;
+  rotR();
+  delay(1000);
+  if(cur_cnt > counter){
       Serial.println("Right!!!");
   }
-  if(aCnt < bCnt){
+  if(counter > cur_cnt){
       Serial.println("Left!!!");
   }
 
-  delay(300);
+  delay(100);
   aLastState = aState; // Updates the previous state of the outputA with the current state
 }
