@@ -35,11 +35,16 @@ void rotR(){
   int state_A, state_B;
   bool check_A = false;
   bool check_B = false;
+  
   for(int i = 0; i < 21; i++){
-    check_A, check_B = false;
+    check_A = false; 
+    check_B = false;
+    
     while(check_A == false || check_B == false){
+      //Reads intial conditon of motor position
       if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor2_A) == HIGH){
-        state_A, state_B = 1;
+        state_A = 1;
+        state_B = 1;
       }
       else if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor2_A) == LOW){
         state_A = 1; 
@@ -62,6 +67,8 @@ void rotR(){
       
       analogWrite(enA, 255);
       analogWrite(enB, 255);
+      delay(1000);
+      //Checks motor position changed or not 
       if(digitalRead(output_motor1_A) != state_A || digitalRead(output_motor2_A) != state_B){
         check_A = true;
         check_B = true;
