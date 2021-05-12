@@ -36,7 +36,7 @@ void rotR(){
   bool check_A = false;
   bool check_B = false;
   
-  for(int i = 0; i < 21; i++){
+  for(int i = 0; i < 13; i++){
     check_A = false; 
     check_B = false;
     
@@ -67,24 +67,35 @@ void rotR(){
       
       analogWrite(enA, 255);
       analogWrite(enB, 255);
-      delay(1000);
+      //delay(1000);
       //Checks motor position changed or not 
       if(digitalRead(output_motor1_A) != state_A || digitalRead(output_motor2_A) != state_B){
         check_A = true;
         check_B = true;
         Serial.println("Clicked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        digitalWrite(in1, LOW);
-        digitalWrite(in2, LOW);  
-        digitalWrite(in3, LOW);
-        digitalWrite(in4, LOW);
       }else{
         check_A = false;
         check_B = false;
       }
       
     }
+
   }
-  
+  /*When rotation is done, motor should stop, but because we use 12V, ust turning off the motor won't be enough, due to
+  charactaristics of coil (coil is very analog not good at On/Off, it can only gradually On/Off), so below code
+  spins motor backwards to stop motor efficiently.
+  */
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(enA, 255);
+    analogWrite(enB, 255);
+    delay(90);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);  
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
 }
 
 void loop() {
