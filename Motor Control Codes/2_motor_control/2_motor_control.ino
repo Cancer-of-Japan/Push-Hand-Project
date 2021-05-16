@@ -31,48 +31,89 @@ void setup() {
 
 }
 
+void check_motor1_stats(int  *state_1A, int *state_1B){
+  if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor1_B) == HIGH){
+        *state_1A = 1;
+        *state_1B = 1;
+      }
+      else if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor1_B) == LOW){
+        *state_1A = 1;
+        *state_1B = 0;
+      }
+      else if(digitalRead(output_motor1_A) == LOW && digitalRead(output_motor1_B) == HIGH){
+        *state_1A = 0;
+        *state_1B = 1;
+      }
+      else if(digitalRead(output_motor1_A) == LOW && digitalRead(output_motor1_B) == LOW){
+        *state_1A = 0;
+        *state_1B = 0;
+      }
+}
+void check_motor2_stats(int *state_2A, int *state_2B){
+  if(digitalRead(output_motor2_A) == HIGH && digitalRead(output_motor2_B) == HIGH){
+        *state_2A = 1;
+        *state_2B = 1;
+      }
+      else if(digitalRead(output_motor2_A) == HIGH && digitalRead(output_motor2_B) == LOW){
+        *state_2A = 1;
+        *state_2B = 0; 
+      }
+      else if(digitalRead(output_motor2_A) == LOW && digitalRead(output_motor2_B) == HIGH){
+        *state_2A = 0;
+        *state_2B = 1;
+      }
+      else if(digitalRead(output_motor2_A) == LOW && digitalRead(output_motor2_B) == LOW){
+        *state_2A = 0;
+        *state_2B = 0; 
+      }
+}
+
 void rotR(){
-  int state_A, state_B;
+  int state1A, state1B, state2A, state2B;
   bool check_A = false;
   bool check_B = false;
   
-  for(int i = 0; i < 13; i++){
+  for(int i = 0; i < 120; i++){
     check_A = false; 
     check_B = false;
     
     while(check_A == false || check_B == false){
+      
       //Reads intial conditon of motor position
-      if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor2_A) == HIGH){
-        state_A = 1;
-        state_B = 1;
-      }
-      else if(digitalRead(output_motor1_A) == HIGH && digitalRead(output_motor2_A) == LOW){
-        state_A = 1; 
-        state_B = 0;
-      }
-      else if(digitalRead(output_motor1_A) == LOW && digitalRead(output_motor2_A) == HIGH){
-        state_A = 0; 
-        state_B = 1;
-      }
-      else if(digitalRead(output_motor1_A) == LOW && digitalRead(output_motor2_A) == LOW){
-        state_A = 0; 
-        state_B = 0;
-      }
+      int a,b;
+      check_motor1_stats(&a, &b);
+      state1A = a, state1B = b;
+      check_motor2_stats(&a, &b);
+      state2A = a, state2B = b;
+//      Serial.print("state_1A...");
+//      Serial.println(state1A);
+//      Serial.print("state_1B...");
+//      Serial.println(state1B);
+//      Serial.print("state_2A...");
+//      Serial.println(state2A);
+//      Serial.print("state_2B...");
+//      Serial.println(state2B);
+//      
       
       //Serial.println("Called !!!");
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
       digitalWrite(in3, HIGH);
-      digitalWrite(in4, LOW);
+      digitalWrite(in4, LOW); 
+      analogWrite(enA, 225);
+      analogWrite(enB, 225);
+      //delay(5);
       
-      analogWrite(enA, 255);
-      analogWrite(enB, 255);
-      //delay(1000);
       //Checks motor position changed or not 
-      if(digitalRead(output_motor1_A) != state_A || digitalRead(output_motor2_A) != state_B){
+      int test1A, test1B, test2A, test2B;
+      check_motor1_stats(&a, &b);
+      test1A = a, test1B = b;
+      check_motor2_stats(&a, &b);
+      test2A = a, test2B = b;
+      if((state1A != test1A || state1B != test1B) && (state2A != test2A || state2B != test2B)){
         check_A = true;
         check_B = true;
-        Serial.println("Clicked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
       }else{
         check_A = false;
         check_B = false;
@@ -81,9 +122,9 @@ void rotR(){
     }
 
   }
-  /*When rotation is done, motor should stop, but because we use 12V, ust turning off the motor won't be enough, due to
+  /*When rotation is done, motor should stop, but because we use 12V, just turning off the motor won't be enough, due to
   charactaristics of coil (coil is very analog not good at On/Off, it can only gradually On/Off), so below code
-  spins motor backwards to stop motor efficiently.
+  spins motor backwards to stop motor efficiently. By reversing for short period, it offsets "gradually stop" section.
   */
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);
@@ -92,6 +133,9 @@ void rotR(){
     analogWrite(enA, 255);
     analogWrite(enB, 255);
     delay(90);
+    //analogWrite(enA, 227);
+    //analogWrite(enB, 227);
+    //delay(20);
     digitalWrite(in1, LOW);
     digitalWrite(in2, LOW);  
     digitalWrite(in3, LOW);
