@@ -45,7 +45,7 @@ void check_motor1_stats(int  *state_1A, int *state_1B){
         *state_1B = 1;
       }
       else if(digitalRead(output_motor1_A) == LOW && digitalRead(output_motor1_B) == LOW){
-        *state_1A = 0;
+        *state_1A = 0;œ
         *state_1B = 0;
       }
 }
@@ -73,11 +73,11 @@ void rotR(){
   bool check_A = false;
   bool check_B = false;
   
-  for(int i = 0; i < 120; i++){
+  for(int i = 0; i < 220; i++){
     check_A = false; 
     check_B = false;
     
-    while(check_A == false || check_B == false){
+    while(check_A == false && check_B == false){
       
       //Reads intial conditon of motor position
       int a,b;
@@ -132,7 +132,7 @@ void rotR(){
     digitalWrite(in4, HIGH);
     analogWrite(enA, 255);
     analogWrite(enB, 255);
-    delay(90);
+    delay(80);
     //analogWrite(enA, 227);
     //analogWrite(enB, 227);
     //delay(20);
