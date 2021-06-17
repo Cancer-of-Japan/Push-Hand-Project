@@ -114,7 +114,6 @@ void loop() {
     lcd.print(" ?");
     lcd.print(i);
     for(int j = 0; j < 10; j++){
-      //Change state
       if(digitalRead(But2) == HIGH){
         delay(100);
         B1cnt++;
@@ -128,7 +127,6 @@ void loop() {
       lcd.print(i);
       delay(100);
       }
-      //No change
       else if(digitalRead(But2 == LOW)){
       lcd.clear();
       lcd.print("Mode ");
@@ -136,6 +134,10 @@ void loop() {
       lcd.print(" ?");
       lcd.print(i);
         delay(100);
+      }
+      else if(digitalRead(But3 == HIGH)){
+        delay(100);
+        break;
       }
     }  
     //delay(1000);
